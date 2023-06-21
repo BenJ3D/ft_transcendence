@@ -1,0 +1,7 @@
+{
+	"prettier.bracketSpacing": true,
+	"editor.insertSpaces": false,
+	"editor.tabSize": 2,
+	"editor.detectIndentation": false,
+	"editor.renderWhitespace": "all"
+}
