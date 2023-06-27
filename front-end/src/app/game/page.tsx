@@ -1,5 +1,9 @@
 import React from 'react'
 import './game.css'
+import axios from 'axios'
+
+console.log(axios.isCancel('something game'));
+
 
 let scoreP1 = 1;
 let scoreP2 = 2;
@@ -17,8 +21,6 @@ function Background () {
 		</>
 	)
 }
-
-
 
 function Player() {
 	let ret;
@@ -54,9 +56,11 @@ function ScoreDisplay({player}: {player: playerScoreboard})
 }
 
 export default function page() {
+	console.log("hello");
+	console.error("helloERR");
 	return (
 			<section className='flex justify-center my-[13%]'>
-				<div className="flex justify-between w-1/3 bg-game-blue rounded-2xl" 
+				<div className="flex justify-between w-1/3 bg-blue-game rounded-2xl" 
 					style={{ height: "calc(40vw * 10 / 16) " }}>
 					<Player />
 					<ScoreDisplay player={{playerId: 1, positionInGame:'left'}}/>
