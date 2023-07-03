@@ -21,7 +21,7 @@ function Player() {
 	let ret;
 	
 	ret =	<>
-					<div className="min-w-[6px] max-w-[15px] min-h-[10px] max-h-[70px] bg-zinc-800 rounded-sm shadow m-6" />
+					<div className="min-w-[0.65vw] max-w-[3vw] min-h-[2vw] max-h-[7vw] bg-zinc-800 rounded-sm shadow m-6" />
 				</>
 	return ret
 }
@@ -54,7 +54,9 @@ export default function page() {
 
 	
 	return (
-			<section className='flex justify-center my-[13%]'>
+		<main className=' bg-blue-app min-h-screen py-[13vw]'>
+
+			<section className='flex justify-center'>
 				<div className="flex justify-between w-1/3 bg-blue-game rounded-2xl" 
 					style={{ height: "calc(40vw * 10 / 16) " }}>
 					<Player />
@@ -63,6 +65,7 @@ export default function page() {
 					<Player />
 			 	</div>
 			</section>
+		</main>
 
 	)
 }

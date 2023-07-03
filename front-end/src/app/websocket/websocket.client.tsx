@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect } from 'react';
+import { Socket } from 'socket.io';
 import io from 'socket.io-client';
 
-export default function WebsocketClient() {
+export default function WebsocketClient(){
   useEffect(() => {
     const socket = io('http://localhost:8000');
     socket.on('connect', () => {
@@ -16,6 +17,5 @@ export default function WebsocketClient() {
       socket.disconnect();
     };
   }, []);
-
-  return null;
+	return null;
 }

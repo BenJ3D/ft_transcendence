@@ -1,8 +1,10 @@
 {
-	"prettier.bracketSpacing": true,
+	"prettier.bracketSpacing": false,
 	"editor.insertSpaces": false,
 	"editor.tabSize": 2,
 	"editor.detectIndentation": false,
 	"editor.renderWhitespace": "all",
-	"explorer.compactFolders": false
+	"explorer.compactFolders": false,
+	"prettier.useTabs": true,
+	"eslint.execArgv": null
 }
