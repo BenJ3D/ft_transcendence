@@ -7,10 +7,3 @@
 	height: 564px;
 	flex-shrink: 0;
 }
-
-.button_dbg2 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(51 65 85 / var(--tw-bg-opacity));
-	height: 1.75rem/* 28px */;
-	width: 10rem;
-}

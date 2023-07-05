@@ -31,21 +31,6 @@ function Player() {
 	return ret
 }
 
-// function getPlayerScore(player: playerScoreboard)
-// {
-// 	return player.positionInGame === 'left' ? scoreP1 : scoreP2
-// }
-
-// function addGoal(position: 'left' | 'right' ): void{
-// 	if (position === 'left')
-// 		scoreP1++;
-// 	else
-// 		scoreP2++;
-// 	console.log("Score:\nP1: " + scoreP1 + '\nP2: ' + scoreP2 );
-// }
-
-
-
 function ScoreDisplay({player}: {player: playerScoreboard})
 {
 	return (
