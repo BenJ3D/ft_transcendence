@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './game.css'
 import ButtonDBG from '@/Components/button/btn_dbg';
 
@@ -20,8 +20,8 @@ function Background () {
 function Player(): React.JSX.Element {
   let ret;
   ret = <>
-    <div className="min-w-[0.65vw] max-w-[3vw] min-h-[2vw] max-h-[7vw] bg-zinc-800 rounded-sm shadow m-6" />
-  </>
+          <div className="min-w-[0.65vw] max-w-[3vw] min-h-[1vw] max-h-[3vw] bg-zinc-800 rounded-sm shadow m-6" />
+        </>
   return ret
 }
 
@@ -40,6 +40,8 @@ export default function Page() {
   const [scoreP2, setScoreP2] = useState(0);
   const [barPositionP1, setBarPositionP1] = useState(0);
   const [keysPressed, setKeysPressed] = useState({});
+  const gameDivRef = useRef(null);
+  const barRef = useRef(null);
 
   function addGoal(position: 'left' | 'right'): void {
     if (position === 'left') {
@@ -71,12 +73,15 @@ export default function Page() {
     let animationFrameId;
 
     const movePlayer = () => {
+      const gameDivHeight = gameDivRef.current.offsetHeight;
+      const barHeight = barRef.current.offsetHeight;
+
       setBarPositionP1((prevPosition) => {
         let newPosition = prevPosition;
         if (keysPressed['ArrowUp']) {
-          newPosition -= 3;
+          newPosition = Math.max(newPosition - 10, 0);
         } else if (keysPressed['ArrowDown']) {
-          newPosition += 3;
+          newPosition = Math.min(newPosition + 10, gameDivHeight - barHeight);
         }
         return newPosition;
       });
@@ -98,6 +103,7 @@ export default function Page() {
       <section className="flex justify-center">
         <ButtonDBG param={{f: () => addGoal("left"), text: "ADD GOAL P1"}} />
         <div
+          ref={gameDivRef}
           className="flex justify-between w-1/3 bg-blue-game rounded-2xl"
           style={{height: "calc(40vw * 10 / 16) "}}
         >
@@ -108,8 +114,11 @@ export default function Page() {
           <ScoreDisplay
             player={{playerId: 2, positionInGame: "right", score: scoreP2}}
           />
-          <div className="min-w-[0.65vw] max-w-[3vw] min-h-[1vw] max-h-[3vw] bg-zinc-800 rounded-sm shadow m-6"
-            style={{transform: `translateY(${barPositionP1}px)`}}>
+          <div 
+            ref={barRef}
+            className="min-w-[0.65vw] max-w-[3vw] min-h-[1vw] max-h-[3vw] bg-zinc-800 rounded-sm shadow m-6"
+            style={{transform: `translateY(${barPositionP1}px)`}}
+          >
           </div>
         </div>
         <ButtonDBG param={{f: () => addGoal("right"), text: "ADD GOAL P2"}} />
@@ -117,5 +126,3 @@ export default function Page() {
     </main>
   );
 }
-
-
