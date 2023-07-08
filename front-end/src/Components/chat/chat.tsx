@@ -1,7 +1,5 @@
 import WebsocketClient from "@/app/websocket/websocket.client";
 
-
-
 export default function MyForm() {
   function handleSubmit(e: any) {
     // Prevent the browser from reloading the page

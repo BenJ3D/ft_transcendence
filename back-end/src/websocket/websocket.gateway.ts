@@ -7,8 +7,13 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-let msg: string;
 let clientid: string;
+
+interface ChatMessage {
+	clientId: number;
+	clientPsedo: string;
+	message: string;
+}
 
 @WebSocketGateway({ cors: true })
 export class WebsocketGateway
@@ -16,6 +21,7 @@ export class WebsocketGateway
 {
 	@WebSocketServer()
 	private server: Server;
+	private messages: string[] = [];
 
 	handleConnection(client: Socket) {
 		// Code pour gérer les nouvelles connexions client
@@ -29,10 +35,17 @@ export class WebsocketGateway
 	}
 
 	@SubscribeMessage('message')
-	handleMessage(client: Socket, payload: any) {
-		// Code pour gérer les messages entrants
-		console.log(client.id + ': ' + payload);
-		// Émettez une réponse au client
-		this.server.emit('response', 'Received your message!');
+	handleMessage(client: Socket, payload: ChatMessage) {
+		console.log(
+			client.id +
+				': ' +
+				payload.clientId +
+				'/' +
+				payload.clientPsedo +
+				' says: ' +
+				payload.message,
+		);
+		this.server.to(client.id).emit('response', 'Received your message!');
+		this.server.to(client.id).emit('response', 'Received your message!');
 	}
 }

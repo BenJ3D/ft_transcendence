@@ -1,0 +1,20 @@
+[
+  {
+    "Id_CHANNEL": 1,
+    "type": 1,
+    "password": "password1",
+    "Id_USERS": 1
+  },
+  {
+    "Id_CHANNEL": 2,
+    "type": 1,
+    "password": "password2",
+    "Id_USERS": 2
+  },
+  {
+    "Id_CHANNEL": 3,
+    "type": 1,
+    "password": "password3",
+    "Id_USERS": 3
+  }
+]
