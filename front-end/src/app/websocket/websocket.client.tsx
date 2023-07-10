@@ -93,7 +93,7 @@ export default function WebsocketClient() {
 	return (
 		<>
 			<div>
-				<ul className="m-6 max-h-80 overflow-auto ">
+				<ul className="m-6 max-h-[32rem] overflow-auto ">
 					{messages.map((msg, index) => (
 						<div key={"blocMessage-" + uuidv4()} className=" ">
 							<li className=" text-neutral-400 font-semibold text-base justify-start ml-4"> {username} </li>
@@ -103,8 +103,8 @@ export default function WebsocketClient() {
 							</li>
 						</div>
 					))}
-					<div ref={messagesEndRef} />{" "}
-					{/*//sert de cible pour le scrolling bas auto */}
+					<div ref={messagesEndRef} />{" "}{/*//sert de cible pour le scrolling bas auto a chaque msg*/}
+					
 				</ul>
 			</div>
 		<>
@@ -118,8 +118,18 @@ export default function WebsocketClient() {
 							className=" bg-neutral-800 text-red-500 flex-grow rounded-lg h-8 p-4"
 						/>
 					</div>
+
+
+
+
+
 					<br />
 					<br />
+
+
+
+
+
 					<p className="text-neutral-500">message :</p>
 					<div className="flex items-center max-w-max">
 						<input
