@@ -95,40 +95,50 @@ export default function WebsocketClient() {
 			<div>
 				<ul className="m-6 max-h-80 overflow-auto ">
 					{messages.map((msg, index) => (
-
-							<div key={'blocMessage-'+uuidv4()} className=" bg-gray-800 flex flex-col p-2 m-2 rounded-xl max-w-max min-w-[10rem]">
-								<li className=" text-blue-700 text-sm justify-start"> {username} </li>
-								<li className=" flex-grow "> {msg} </li>
-							</div>
+						<div key={"blocMessage-" + uuidv4()} className=" ">
+							<li className=" text-neutral-400 font-semibold text-base justify-start ml-4"> {username} </li>
+							<li className=" bg-gray-800 flex flex-col p-2 ml-2 mb-4 rounded-xl max-w-max min-w-[10rem]">
+								{" "}
+								{msg}{" "}
+							</li>
+						</div>
 					))}
 					<div ref={messagesEndRef} />{" "}
 					{/*//sert de cible pour le scrolling bas auto */}
 				</ul>
 			</div>
-			<>
+		<>
 				<div className="bg-slate-900 m-10 p-5">
-					username :
-					<input
-						type="text"
-						value={username}
-						onChange={(b) => setUsername(b.target.value)}
-						className="text-red-900"
-					/>
+					<p className="text-neutral-500">username :</p>
+					<div className="flex items-center max-w-max">
+						<input
+							type="text"
+							value={username}
+							onChange={(b) => setUsername(b.target.value)}
+							className=" bg-neutral-800 text-red-500 flex-grow rounded-lg h-8 p-4"
+						/>
+					</div>
 					<br />
 					<br />
-					message :
-					<input
-						type="text"
-						value={message}
-						onChange={(e) => setMessage(e.target.value)}
-						onKeyDown={(e) => {
-							if (e.key === "Enter") sendMessageObj(message);
-						}}
-						className="text-neutral-900"
-					/>
-					<button onClick={() => sendMessageObj(message)} className=" ml-5">
-						Send
-					</button>
+					<p className="text-neutral-500">message :</p>
+					<div className="flex items-center max-w-max">
+						<input
+							type="text"
+							value={message}
+							onChange={(e) => setMessage(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") sendMessageObj(message);
+							}}
+							className="text-zinc-200 bg-neutral-800 flex-grow rounded-lg h-8 p-4"
+						/>
+						<button onClick={() => sendMessageObj(message)} className=" ml-5">
+							<img
+								src="/chat/send.svg"
+								alt="Send"
+								className="max-w-[2rem] min-w-[1rem]"
+							/>
+						</button>
+					</div>
 				</div>
 			</>
 		</>
