@@ -27,6 +27,7 @@ export class WebsocketGateway
 		// Code pour gérer les nouvelles connexions client
 		clientid = client.id;
 		console.log('NEW CONNEXION CLIENT, id = ' + clientid);
+		this.server.to(clientid).emit('Bienvenue a toi');
 	}
 
 	handleDisconnect(client: Socket) {
@@ -35,17 +36,9 @@ export class WebsocketGateway
 	}
 
 	@SubscribeMessage('message')
-	handleMessage(client: Socket, payload: ChatMessage) {
-		console.log(
-			client.id +
-				': ' +
-				payload.clientId +
-				'/' +
-				payload.clientPsedo +
-				' says: ' +
-				payload.message,
-		);
-		this.server.to(client.id).emit('response', 'Received your message!');
+	handleMessage(client: Socket, payload: string) {
+		console.log(client.id + ': ' + payload);
+		this.messages.push(payload);
 		this.server.to(client.id).emit('response', 'Received your message!');
 	}
 }

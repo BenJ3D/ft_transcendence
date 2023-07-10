@@ -10,7 +10,12 @@ interface ChatMessage {
 export default function WebsocketClient() {
 	const [message, setMessage] = useState("");
 	const [messages, setMessages] = useState<string[]>([]);
-	const socketRef = useRef<Socket | null>(null);
+	
+	const [username, setUsername] = useState("");
+	const [chatMsg, setChatMsg] = useState<ChatMessage>();
+	const [chatMsgs, setChatMsgs] = useState<ChatMessage[]>([]);
+
+	const socketRef = useRef<Socket | null>(null); //avant detre generer il est null (pour faire plaisir a Prettier/ESLint) 
 
 	useEffect(() => {
 		socketRef.current = io("http://localhost:8000");
@@ -22,6 +27,7 @@ export default function WebsocketClient() {
 			socketRef.current.on("message", (message: string) => {
 				console.log("Received message:", message);
 				setMessages((prevMessages) => [...prevMessages, message]);
+				console.log('All messages = ' + messages)
 			});
 		}
 
@@ -32,6 +38,22 @@ export default function WebsocketClient() {
 		};
 	}, []);
 
+	const sendMessageObj = (msg: string) => {
+		if (socketRef.current) {
+			let messObj: ChatMessage = {
+				clientId : 1,
+				clientPsedo : 'bducrocq',
+				message : msg
+			};
+			console.log('DBG DEBUUUUUG => '  + msg)
+			socketRef.current.emit("message", msg);
+			setMessages((prevMessages) => [...prevMessages, message]);
+			setMessage("");
+		} else {
+			console.error("Tried to send a message before socket is connected");
+		}
+	};
+
 	const sendMessage = () => {
 		if (socketRef.current) {
 			let messObj: ChatMessage = {
@@ -40,7 +62,7 @@ export default function WebsocketClient() {
 				message : ''
 			};
 
-			socketRef.current.emit("message", messObj);
+			socketRef.current.emit("message", messObj, message);
 			setMessages((prevMessages) => [...prevMessages, message]);
 			setMessage("");
 		} else {
@@ -50,19 +72,38 @@ export default function WebsocketClient() {
 
 	return (
 		<div>
+			username : 
+			<input
+				type="text"
+				value={username}
+				onChange={(b) => setUsername(b.target.value)}
+				className="text-red-900"
+			/>
+			<br/>
+			<br/>
+			message : 
 			<input
 				type="text"
 				value={message}
 				onChange={(e) => setMessage(e.target.value)}
-				className=" text-neutral-900"
+				className="text-neutral-900"
 			/>
-			<button onClick={sendMessage}>Send</button>
+			<button onClick={() => sendMessageObj(message)}>Send</button>
 
-			<ul>
+			<ul className="m-6 ">
 				{messages.map((msg, index) => (
-					<li key={index}>{msg}</li>
+					<>
+						<div className=' bg-gray-800 flex flex-col p-2 m-2 rounded-xl whitespace-normal'>
+
+						<li className=" text-blue-700 text-sm justify-start" key={username}>{username}</li>
+						<li className=' flex-grow ' key={index}>{msg}</li>
+						</div>
+					</>
 				))}
 			</ul>
 		</div>
 	);
 }
+
+//TODO: envoi tous les messages quand connexion client
+//TODO: quand nouveau message, lenvoyer a tous les clients
