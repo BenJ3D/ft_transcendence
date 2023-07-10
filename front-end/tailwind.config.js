@@ -15,6 +15,7 @@ module.exports = {
 			colors: {
 				'blue-game': '#01FDFF',
 				'blue-app': '#050C2E',
+				'gray-A3' : '#A3A3A3',
 			},
     },
   },
