@@ -57,6 +57,7 @@ export default function WebsocketClient() {
 			alert(
 				"Votre message doit faire moins de 512 charactere ;) (desolé abucia tu ne me le peteras pas avec ça xD)"
 			);
+			setMessage("");
 			return;
 		}
 		if (socketRef.current) {
@@ -65,7 +66,7 @@ export default function WebsocketClient() {
 				clientPsedo: "bducrocq",
 				message: msg,
 			};
-			console.log("DBG DEBUUUUUG => " + msg);
+			console.log("DBG DEBUUUUUG => " + messObj.message);
 			socketRef.current.emit("message", msg);
 			setMessages((prevMessages) => [...prevMessages, message]);
 			setMessage("");
