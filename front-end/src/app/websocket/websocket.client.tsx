@@ -1,28 +1,38 @@
 import {useState, useEffect, useRef} from "react";
 import io, {Socket} from "socket.io-client";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from "uuid";
 
 interface ChatMessage {
 	clientId: number;
+	clientSocketId?: string;
 	clientPsedo: string;
 	message: string;
 }
 
 const max_msg_lenght: number = 512;
 
-export default function WebsocketClient() {
-	const [message, setMessage] = useState("");
+export default function WebsocketClient({className}: {className: string}) {
+	const [message, setMessage] = useState<string>("");
 	const [messages, setMessages] = useState<string[]>([]);
+	const [infoMessages, setInfoMessages] = useState<string>("");
 
 	const [username, setUsername] = useState("");
 	const [chatMsg, setChatMsg] = useState<ChatMessage>();
 	const [chatMsgs, setChatMsgs] = useState<ChatMessage[]>([]);
+	
+	const [channels, setchannels] = useState<string[]>([]);
+	const [currentChannel, setCurrentChannel] = useState<string>('');
 
-	const socketRef = useRef<Socket | null>(null); //avant detre generer il est null (pour faire plaisir a Prettier/ESLint)
+	const socketRef = useRef<Socket | null>(null);
 	const messagesEndRef = useRef<any>(null);
 
-	useEffect(() => {
-		socketRef.current = io("http://localhost:8000");
+	const connectToWebsocket = () => {
+		if (socketRef.current) socketRef.current.disconnect();
+		socketRef.current = io("http://localhost:8000", {
+			query: {
+				username: username,
+			},
+		});
 
 		if (socketRef.current) {
 			socketRef.current.on("connect", () => {
@@ -30,22 +40,37 @@ export default function WebsocketClient() {
 			});
 			socketRef.current.on("message", (message: string) => {
 				console.log("Received message:", message);
+			});
+			socketRef.current.on("welcome", (message: string) => {
+				setInfoMessages(message);
+				// console.log("Received message:", messages);
+			});
+			socketRef.current.on("getallmsg", (messages: string[]) => {
+				setMessages(messages);
+				// console.log("Received message:", messages);
+			});
+			socketRef.current.on("getallmsgObj", (messages: ChatMessage[]) => {
+				setChatMsgs(messages);
+				// console.log("Received message:", messages);
+			});
+			socketRef.current.on("response", (message: string) => {
+				console.log("Message confirmé recu:", message);
 				setMessages((prevMessages) => [...prevMessages, message]);
-				console.log("All messages = " + messages);
+			});
+			socketRef.current.on("responseObj", (obj: ChatMessage) => {
+				console.log("MessageObj confirmé recu:", obj.message + ' de ' + obj.clientPsedo);
+				setChatMsgs((prevChatMsgs) => [...prevChatMsgs, obj]);
 			});
 		}
+	};
 
-		return () => {
-			if (socketRef.current) {
-				socketRef.current.disconnect();
-			}
-		};
-	}, []);
-
-	//Faire en sorte que l'on suive toujours les derniers messages //TODO: faire une bool pour si on remonte la liste des messages
-	useEffect(() => {
-		messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
-	}, [messages]);
+	const handleConnect = () => {
+		if (username.trim().length === 0) {
+			alert("Username ne doit pas être vide ou ne contenir que des espaces");
+			return;
+		}
+		connectToWebsocket();
+	};
 
 	const sendMessageObj = (msg: string) => {
 		if (username.trim().length === 0) {
@@ -54,61 +79,60 @@ export default function WebsocketClient() {
 		}
 		if (msg.trim().length === 0) return;
 		else if (msg.length >= max_msg_lenght) {
-			alert(
-				"Votre message doit faire moins de 512 charactere ;) (desolé abucia tu ne me le peteras pas avec ça xD)"
-			);
+			alert("Votre message doit faire moins de 512 caractères ;)");
 			setMessage("");
 			return;
 		}
 		if (socketRef.current) {
 			let messObj: ChatMessage = {
 				clientId: 1,
-				clientPsedo: "bducrocq",
+				clientSocketId: socketRef.current.id,
+				clientPsedo: username,
 				message: msg,
 			};
 			console.log("DBG DEBUUUUUG => " + messObj.message);
-			socketRef.current.emit("message", msg);
-			setMessages((prevMessages) => [...prevMessages, message]);
+			socketRef.current.emit("message", messObj.message);
+			socketRef.current.emit("messageObj", messObj);
 			setMessage("");
 		} else {
 			console.error("Tried to send a message before socket is connected");
 		}
 	};
 
-	const sendMessage = () => {
-		if (socketRef.current) {
-			let messObj: ChatMessage = {
-				clientId: 1,
-				clientPsedo: "bducrocq",
-				message: "",
-			};
-
-			socketRef.current.emit("message", messObj, message);
-			setMessages((prevMessages) => [...prevMessages, message]);
-			setMessage("");
-		} else {
-			console.error("Tried to send a message before socket is connected");
-		}
-	};
+	useEffect(() => {
+		messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
+	}, [messages]);
 
 	return (
-		<>
+		<div className={className}>
 			<div>
+				<div className="flex justify-center text-sm text-neutral-300 pt-4">
+					{infoMessages}
+				</div>
 				<ul className="m-6 max-h-[32rem] overflow-auto ">
-					{messages.map((msg, index) => (
-						<div key={"blocMessage-" + uuidv4()} className=" ">
-							<li className=" text-neutral-400 font-semibold text-base justify-start ml-4"> {username} </li>
+					{/* {messages.map((msg, index) => (
+						<div key={"blocMessage-" + uuidv4()}>
+							<li className=" text-neutral-400 font-semibold text-base justify-start ml-4">{username}</li>
+							<li className=" bg-gray-800 flex flex-col p-2 ml-2 mb-4 rounded-xl max-w-max min-w-[10rem]">{msg}</li>
+						</div>
+					))} */}
+
+
+
+					{chatMsgs.map((obj, index) => (
+						<div key={"blocMessage-" + uuidv4()}>
+							<li className=" text-neutral-400 font-semibold text-base justify-start ml-4">
+								{obj.clientPsedo}
+							</li>
 							<li className=" bg-gray-800 flex flex-col p-2 ml-2 mb-4 rounded-xl max-w-max min-w-[10rem]">
-								{" "}
-								{msg}{" "}
+								{obj.message}
 							</li>
 						</div>
 					))}
-					<div ref={messagesEndRef} />{" "}{/*//sert de cible pour le scrolling bas auto a chaque msg*/}
-					
+					<div ref={messagesEndRef} />
 				</ul>
 			</div>
-		<>
+			<>
 				<div className="bg-slate-900 m-10 p-5">
 					<p className="text-neutral-500">username :</p>
 					<div className="flex items-center max-w-max">
@@ -118,18 +142,13 @@ export default function WebsocketClient() {
 							onChange={(b) => setUsername(b.target.value)}
 							className=" bg-neutral-800 text-red-500 flex-grow rounded-lg h-8 p-4"
 						/>
+						<button onClick={handleConnect} className="ml-5">
+							Connect
+						</button>
 					</div>
 
-
-
-
-
 					<br />
 					<br />
-
-
-
-
 
 					<p className="text-neutral-500">message :</p>
 					<div className="flex items-center max-w-max">
@@ -152,9 +171,6 @@ export default function WebsocketClient() {
 					</div>
 				</div>
 			</>
-		</>
+		</div>
 	);
 }
-
-//TODO: envoi tous les messages quand connexion client
-//TODO: quand nouveau message, lenvoyer a tous les clients
