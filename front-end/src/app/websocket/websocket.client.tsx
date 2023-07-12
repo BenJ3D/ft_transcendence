@@ -5,7 +5,7 @@ import { ChatMessage } from "../../interfaces/chatTypes";
 
 const max_msg_lenght: number = 512;
 
-export default function WebsocketClient({className}: {className: string}) {
+export default function WebsocketClient({className, classNameBlockMessage}: {className: string, classNameBlockMessage: string}) {
 	const [message, setMessage] = useState<string>("");
 	const [messages, setMessages] = useState<string[]>([]);
 	const [infoMessages, setInfoMessages] = useState<string>("");
@@ -106,15 +106,16 @@ export default function WebsocketClient({className}: {className: string}) {
 				<div className="flex justify-center text-sm text-neutral-300 pt-4">
 					{infoMessages}
 				</div>
-				<ul className="m-6 max-h-[32rem] overflow-auto ">
+				<ul className={classNameBlockMessage}>
 
 
 					{chatMsgs.map((obj, index) => (
 						<div key={"blocMessage-" + uuidv4()} className={obj.clientPsedo === username ? 'text-right' : 'text-left '}>
-							<li className={`text-neutral-400 font-semibold text-base ml-4 ${obj.clientPsedo === username ? 'text-right ml-auto' : 'text-left ml-2'}`}>
+							<li className={`text-neutral-400 font-semibold text-base ml-4 ${obj.clientPsedo === username ? 'text-right ml-auto mr-5' : 'text-left ml-2'}`}>
 								{obj.clientPsedo}
 							</li>
-							<li className={`p-2 mb-4 rounded-xl max-w-max min-w-[10rem] ${obj.clientPsedo === username ? 'text-right ml-auto bg-teal-900' : 'text-left ml-2 bg-gray-800'}`}>
+							<li className={`p-2 mb-4 rounded-xl max-w-max min-w-[10rem] 
+															${obj.clientPsedo === username ? 'text-right ml-auto mr-4 bg-teal-900' : 'text-left ml-2 bg-gray-800'}`}>
 								{obj.message}
 							</li>
 						</div>
