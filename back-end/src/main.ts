@@ -6,7 +6,10 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const ioAdapter = new IoAdapter(app);
 	app.enableCors({
-		origin: 'http://localhost:3000',
+		origin: true, // ou définissez une liste d'origines autorisées ['http://example.com', 'http://localhost:3000']
+		methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
+		credentials: true,
 	});
 	app.useWebSocketAdapter(ioAdapter);
 	await app.listen(8000);

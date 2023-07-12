@@ -7,16 +7,11 @@ import {
 	ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { ChatMessage } from '../interfaces/chatTypes';
 
 interface UserSocket {
 	username: string;
 	socketID: string;
-}
-
-interface ChatMessage {
-	clientId: number;
-	clientPsedo: string;
-	message: string;
 }
 
 @WebSocketGateway({ cors: true })

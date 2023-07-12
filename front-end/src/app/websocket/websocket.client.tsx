@@ -1,13 +1,7 @@
-import {useState, useEffect, useRef} from "react";
-import io, {Socket} from "socket.io-client";
-import {v4 as uuidv4} from "uuid";
-
-interface ChatMessage {
-	clientId: number;
-	clientSocketId?: string;
-	clientPsedo: string;
-	message: string;
-}
+import { useState, useEffect, useRef } from "react";
+import io, { Socket } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
+import { ChatMessage } from "../../interfaces/chatTypes";
 
 const max_msg_lenght: number = 512;
 
@@ -27,12 +21,16 @@ export default function WebsocketClient({className}: {className: string}) {
 	const messagesEndRef = useRef<any>(null);
 
 	const connectToWebsocket = () => {
-		if (socketRef.current) socketRef.current.disconnect();
-		socketRef.current = io("http://localhost:8000", {
-			query: {
-				username: username,
-			},
-		});
+		if (socketRef.current)
+			return;
+		else
+		{
+			socketRef.current = io("http://localhost:8000", {
+				query: {
+					username: username,
+				},
+			});
+		}
 
 		if (socketRef.current) {
 			socketRef.current.on("connect", () => {
@@ -45,10 +43,6 @@ export default function WebsocketClient({className}: {className: string}) {
 				setInfoMessages(message);
 				// console.log("Received message:", messages);
 			});
-			socketRef.current.on("getallmsg", (messages: string[]) => {
-				setMessages(messages);
-				// console.log("Received message:", messages);
-			});
 			socketRef.current.on("getallmsgObj", (messages: ChatMessage[]) => {
 				setChatMsgs(messages);
 				// console.log("Received message:", messages);
@@ -58,7 +52,10 @@ export default function WebsocketClient({className}: {className: string}) {
 				setMessages((prevMessages) => [...prevMessages, message]);
 			});
 			socketRef.current.on("responseObj", (obj: ChatMessage) => {
-				console.log("MessageObj confirmé recu:", obj.message + ' de ' + obj.clientPsedo);
+				console.log(
+					"MessageObj confirmé recu:",
+					obj.message + " de " + obj.clientPsedo
+				);
 				setChatMsgs((prevChatMsgs) => [...prevChatMsgs, obj]);
 			});
 		}
@@ -101,7 +98,7 @@ export default function WebsocketClient({className}: {className: string}) {
 
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
-	}, [messages]);
+	}, [chatMsgs]);
 
 	return (
 		<div className={className}>
@@ -110,21 +107,14 @@ export default function WebsocketClient({className}: {className: string}) {
 					{infoMessages}
 				</div>
 				<ul className="m-6 max-h-[32rem] overflow-auto ">
-					{/* {messages.map((msg, index) => (
-						<div key={"blocMessage-" + uuidv4()}>
-							<li className=" text-neutral-400 font-semibold text-base justify-start ml-4">{username}</li>
-							<li className=" bg-gray-800 flex flex-col p-2 ml-2 mb-4 rounded-xl max-w-max min-w-[10rem]">{msg}</li>
-						</div>
-					))} */}
-
 
 
 					{chatMsgs.map((obj, index) => (
-						<div key={"blocMessage-" + uuidv4()}>
-							<li className=" text-neutral-400 font-semibold text-base justify-start ml-4">
+						<div key={"blocMessage-" + uuidv4()} className={obj.clientPsedo === username ? 'text-right' : 'text-left '}>
+							<li className={`text-neutral-400 font-semibold text-base ml-4 ${obj.clientPsedo === username ? 'text-right ml-auto' : 'text-left ml-2'}`}>
 								{obj.clientPsedo}
 							</li>
-							<li className=" bg-gray-800 flex flex-col p-2 ml-2 mb-4 rounded-xl max-w-max min-w-[10rem]">
+							<li className={`p-2 mb-4 rounded-xl max-w-max min-w-[10rem] ${obj.clientPsedo === username ? 'text-right ml-auto bg-teal-900' : 'text-left ml-2 bg-gray-800'}`}>
 								{obj.message}
 							</li>
 						</div>
@@ -142,14 +132,14 @@ export default function WebsocketClient({className}: {className: string}) {
 							onChange={(b) => setUsername(b.target.value)}
 							className=" bg-neutral-800 text-red-500 flex-grow rounded-lg h-8 p-4"
 						/>
-						<button onClick={handleConnect} className="ml-5">
+						<button onClick={() => handleConnect()} className="ml-5">
 							Connect
 						</button>
 					</div>
 
 					<br />
 					<br />
-
+					{/* bloc button envoi de message */}
 					<p className="text-neutral-500">message :</p>
 					<div className="flex items-center max-w-max">
 						<input
