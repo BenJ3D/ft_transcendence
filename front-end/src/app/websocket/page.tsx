@@ -9,7 +9,7 @@ export default function ChatRoom() {
 			<h1 className="text-xl md:text-xl lg:text-xl font-bold text-center my-5">
 				WEBSOCKET - CHAT PROTOTYPE
 			</h1>
-			<WebsocketClient className='' classNameBlockMessage='m-6 overflow-auto xl:h-[800px] lg:h-[700px] md:h-[550px] sm:h-[450px]'/>
+			<WebsocketClient className='' classNameBlockMessage='m-6 overflow-auto h-[350px]'/>
 		</>
 	);
 }

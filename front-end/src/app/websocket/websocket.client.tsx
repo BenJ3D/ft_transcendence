@@ -25,11 +25,16 @@ export default function WebsocketClient({className, classNameBlockMessage}: {cla
 			return;
 		else
 		{
-			socketRef.current = io("http://localhost:8000", {
+			socketRef.current = io("http://pongpod.ben3d.fr:8000/", {
 				query: {
 					username: username,
 				},
 			});
+			// socketRef.current = io("localhost:8000/", {
+			// 	query: {
+			// 		username: username,
+			// 	},
+			// });
 		}
 
 		if (socketRef.current) {
