@@ -1,11 +1,16 @@
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function Home() {
+	const [isLogged, setIsLogged] = useState<boolean>(false);
+	
+
 	return (
 		<>
 			<div>Home</div>
-			<Link href='/42oauth'>LOGIN</Link>
+
+			<div>Veuillez vous identifier</div>
+			<Link href='/login'>LOGIN</Link>
 		</>
 	)
 }
