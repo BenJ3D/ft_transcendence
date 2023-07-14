@@ -1,9 +1,9 @@
 import {
 	Controller,
 	Delete,
-	Patch,
 	Put,
 	Param,
+	Query,
 	Body,
 	Post,
 	Get,
@@ -42,7 +42,7 @@ export class UsersController {
 	}
 
 	@Get(':id')
-	async findOne(@Param('id') id: string): Promise<User | undefined> {
+	async findOneById(@Param('id') id: string): Promise<User | undefined> {
 		const user = await this.userService.findOne(parseInt(id));
 		if (!user) {
 			throw new NotFoundException('User not found');
@@ -50,10 +50,16 @@ export class UsersController {
 		return user;
 	}
 
-	// @Patch(':id')
-	// async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-	// 	return this.userService.update(parseInt(id), updateUserDto);
-	// }
+	@Get('username/:username')
+	async findOneByUsername(
+		@Param('username') username: string,
+	): Promise<User | undefined> {
+		const user = await this.userService.findByUsername(username);
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		return user;
+	}
 
 	@Put(':id')
 	async update(
