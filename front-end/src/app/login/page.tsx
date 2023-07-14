@@ -1,14 +1,19 @@
 'use client'
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
+import { useRouter } from 'next/navigation' // Importez useRouter
 
 export default function Page() {
-	const [username, setUsername] = useState('')
-	const [tmpInput, setTmpInput] = useState('')
+	const [username, setUsername] = useState<string | null>(null)
+	const [tmpInput, setTmpInput] = useState<string>('')
 
-	const [isLogged, setIsLogged] = useState<boolean>(false);
+	const [isLogged, setIsLogged] = useState<boolean | null>(null); // Initialisez isLogged à null
+
+	const router = useRouter() // Initialisez useRouter
 
 	useEffect(() => {
+		if (username === null)
+			return;
 		const user = {
 			username: username,
 			avatar_path: null,
@@ -31,6 +36,13 @@ export default function Page() {
 				console.error(error);
 			});
 	}, [username]);
+
+	// Ajoutez ce hook useEffect pour surveiller les changements de isLogged
+	useEffect(() => {
+		if (isLogged === true) { // Vérifiez si isLogged est true avant de rediriger
+			router.push(`/profile/${username}`) // Naviguez vers la page de profil de l'utilisateur
+		}
+	}, [isLogged, router, username])
 
 	return (
 		<>

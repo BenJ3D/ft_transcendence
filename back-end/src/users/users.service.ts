@@ -35,10 +35,6 @@ export class UserService {
 		return await this.userRepository.find();
 	}
 
-	// async findOneByUsername(username: string): Promise<User | undefined> {
-	// 	return await this.userRepository.findOne({ where: { username } });
-	// }
-
 	async findByUsername(username: string): Promise<User | undefined> {
 		return await this.userRepository.findOne({ where: { username } });
 	}
