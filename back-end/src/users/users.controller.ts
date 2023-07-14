@@ -1,51 +1,85 @@
 import {
 	Controller,
-	HttpCode,
 	Delete,
 	Patch,
+	Put,
 	Param,
 	Body,
 	Post,
 	Get,
-	Res,
+	NotFoundException,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
+interface ErrorResponse {
+	error: string;
+}
+
 @Controller('users')
 export class UsersController {
-	constructor(private readonly usersService: UsersService) {}
+	constructor(private readonly userService: UserService) {}
 
 	@Post()
-	create(@Body() createUserDto: CreateUserDto) {
-		return this.usersService.create(createUserDto);
+	async create(
+		@Body() createUserDto: CreateUserDto,
+	): Promise<User | ErrorResponse> {
+		const existingUser = await this.userService.findByUsername(
+			createUserDto.username,
+		);
+		if (existingUser) {
+			return { error: 'Username is already taken' };
+		}
+		const newUser = this.userService.create(createUserDto);
+		return newUser;
 	}
 
 	@Get()
-	findAll() {
-		return this.usersService.findAll();
+	async findAll() {
+		return this.userService.findAll();
 	}
 
 	@Get(':id')
-	// @Res(HttpCode)
-	// @HttpCode(200)
-	findOne(@Param('id') id: string) {
-		return User.count().then((id_count) => {
-			if (id_count >= parseInt(id) && parseInt(id) > 0)
-				return this.usersService.findOne(parseInt(id));
-			return User.create({ id_users: -1 });
-		});
+	async findOne(@Param('id') id: string): Promise<User | undefined> {
+		const user = await this.userService.findOne(parseInt(id));
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		return user;
 	}
 
-	@Patch(':id')
-	update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-		return this.usersService.update(+id, updateUserDto);
+	// @Patch(':id')
+	// async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+	// 	return this.userService.update(parseInt(id), updateUserDto);
+	// }
+
+	@Put(':id')
+	async update(
+		@Param('id') id: string,
+		@Body() updateUserDto: UpdateUserDto,
+	): Promise<User | { message: string }> {
+		const user = await this.userService.findOne(parseInt(id));
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+
+		const updatedUser = await this.userService.update(
+			parseInt(id),
+			updateUserDto,
+		);
+		return updatedUser || { message: 'User updated successfully' };
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
-		return this.usersService.remove(+id);
+	async remove(@Param('id') id: string): Promise<{ message: string }> {
+		const user = await this.userService.findOne(parseInt(id));
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		const tmp = user.username;
+		await this.userService.remove(parseInt(id));
+		return { message: `User ${tmp} (id: ${id}) removed successfully` };
 	}
 }

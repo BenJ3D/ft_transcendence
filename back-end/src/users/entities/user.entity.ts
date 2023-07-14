@@ -1,51 +1,22 @@
-import {
-	BaseEntity,
-	Column,
-	Entity,
-	OneToMany,
-	PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-export enum UserStatus {
-	ONLINE = 1,
-	OFFLINE = 0,
-}
-
-@Entity('test')
-export class User extends BaseEntity {
+@Entity('USERS')
+export class User {
 	@PrimaryGeneratedColumn()
-	id_users: number;
+	Id_USERS: number;
 
-	@Column({
-		type: 'varchar',
-		length: 12,
-	})
+	@Column({ type: 'varchar', length: 12, nullable: false })
 	username: string;
 
-	// Todo: comeback later to proper storage
-	@Column({
-		type: 'varchar',
-		length: 256,
-		default: null,
-		nullable: true,
-	})
+	@Column({ type: 'varchar', length: 256, nullable: true })
 	avatar_path: string;
 
-	@Column({
-		type: 'varchar',
-		length: 100,
-		default: null,
-		nullable: true,
-	})
-	token_2fa: string;
+	@Column({ type: 'smallint', nullable: false })
+	status: number;
 
-	@Column({
-		type: 'enum',
-		enum: UserStatus,
-		default: UserStatus.ONLINE,
-	})
-	status: UserStatus;
+	@Column({ type: 'varchar', length: 100, nullable: true })
+	token_2FA: string;
 
-	// @OneToMany()
-	// friend_list:
+	@Column({ type: 'boolean', nullable: false })
+	has_2FA: boolean;
 }

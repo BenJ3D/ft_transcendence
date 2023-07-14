@@ -1,48 +1,54 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+interface ErrorResponse {
+	error: string;
+}
 
 @Injectable()
-export class UsersService {
+export class UserService {
 	constructor(
 		@InjectRepository(User)
-		private usersRepository: Repository<User>,
+		private userRepository: Repository<User>,
 	) {}
 
-	/**
-	 * Todo: update with new thing in table
-	 */
-	async create(createUserDto: CreateUserDto) {
-		const user = User.create({
-			username: createUserDto.username,
-		});
-		await user.save();
-		return `User ${user.username} created with id ${user.id_users} successfully :D`;
+	async count(): Promise<number> {
+		return this.userRepository.count();
 	}
 
-	findAll() {
-		return this.usersRepository.find();
+	async create(createUserDto: CreateUserDto): Promise<User | ErrorResponse> {
+		const existingUser = await this.findByUsername(createUserDto.username);
+		if (existingUser) {
+			// throw new Error('Username is already taken');
+			// Ou bien, vous pouvez renvoyer une réponse avec un code d'erreur approprié
+			return { error: 'Username is already taken' };
+		}
+		const newUser = this.userRepository.create(createUserDto);
+		return await this.userRepository.save(newUser);
 	}
 
-	/**
-	 * Todo: return something (Error code?) if invalid id
-	 */
-	findOne(id: number) {
-		return this.usersRepository.findOneBy({ id_users: id });
+	async findAll(): Promise<User[]> {
+		return await this.userRepository.find();
 	}
 
-	/**
-	 * Todo: do those
-	 */
-	update(id: number, updateUserDto: UpdateUserDto) {
-		return `This action updates a #${id} user`;
+	async findByUsername(username: string): Promise<User | undefined> {
+		return await this.userRepository.findOne({ where: { username } });
 	}
 
-	async remove(id: number): Promise<string> {
-		await this.usersRepository.delete(id);
-		return `User with id ${id} has been removed successfully`;
+	async findOne(id: number): Promise<User | undefined> {
+		return await this.userRepository.findOne({ where: { Id_USERS: id } });
+	}
+
+	async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+		await this.userRepository.update(id, updateUserDto);
+		return await this.userRepository.findOne({ where: { Id_USERS: id } });
+	}
+
+	async remove(id: number): Promise<void> {
+		await this.userRepository.delete(id);
 	}
 }
