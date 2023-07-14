@@ -5,10 +5,6 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-interface ErrorResponse {
-	error: string;
-}
-
 @Injectable()
 export class UserService {
 	constructor(
@@ -20,12 +16,10 @@ export class UserService {
 		return this.userRepository.count();
 	}
 
-	async create(createUserDto: CreateUserDto): Promise<User | ErrorResponse> {
+	async create(createUserDto: CreateUserDto): Promise<User | undefined> {
 		const existingUser = await this.findByUsername(createUserDto.username);
 		if (existingUser) {
-			// throw new Error('Username is already taken');
-			// Ou bien, vous pouvez renvoyer une réponse avec un code d'erreur approprié
-			return { error: 'Username is already taken' };
+			throw new Error('Username is already taken');
 		}
 		const newUser = this.userRepository.create(createUserDto);
 		return await this.userRepository.save(newUser);

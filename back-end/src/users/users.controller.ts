@@ -25,12 +25,12 @@ export class UsersController {
 	@Post()
 	async create(
 		@Body() createUserDto: CreateUserDto,
-	): Promise<User | ErrorResponse> {
+	): Promise<User | undefined> {
 		const existingUser = await this.userService.findByUsername(
 			createUserDto.username,
 		);
 		if (existingUser) {
-			return { error: 'Username is already taken' };
+			throw new NotFoundException('Username is already taken');
 		}
 		const newUser = this.userService.create(createUserDto);
 		return newUser;
@@ -41,7 +41,7 @@ export class UsersController {
 		return this.userService.findAll();
 	}
 
-	@Get(':id')
+	@Get('id/:id')
 	async findOneById(@Param('id') id: string): Promise<User | undefined> {
 		const user = await this.userService.findOne(parseInt(id));
 		if (!user) {
@@ -50,7 +50,7 @@ export class UsersController {
 		return user;
 	}
 
-	@Get('username/:username')
+	@Get(':username')
 	async findOneByUsername(
 		@Param('username') username: string,
 	): Promise<User | undefined> {
