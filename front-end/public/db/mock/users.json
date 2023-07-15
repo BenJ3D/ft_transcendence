@@ -1,0 +1,42 @@
+[
+  {
+    "Id_USERS": 1,
+    "username": "amiguez",
+    "avatar_path": null,
+    "status": 1,
+    "token_2FA": "token1",
+    "has_2FA": false
+  },
+  {
+    "Id_USERS": 2,
+    "username": "tgriffit",
+    "avatar_path": null,
+    "status": 1,
+    "token_2FA": "token2",
+    "has_2FA": false
+  },
+  {
+    "Id_USERS": 3,
+    "username": "abucia",
+    "avatar_path": null,
+    "status": 1,
+    "token_2FA": "token3",
+    "has_2FA": false
+  },
+  {
+    "Id_USERS": 4,
+    "username": "bducrocq",
+    "avatar_path": null,
+    "status": 1,
+    "token_2FA": "token4",
+    "has_2FA": false
+  },
+  {
+    "Id_USERS": 5,
+    "username": "doudounette",
+    "avatar_path": null,
+    "status": 1,
+    "token_2FA": "token4",
+    "has_2FA": false
+  }
+]

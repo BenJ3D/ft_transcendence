@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as process from 'process';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
+import { WebsocketGateway } from './websocket/websocket.gateway';
 
 @Module({
 	imports: [
@@ -26,6 +27,7 @@ import { User } from './users/entities/user.entity';
 		UsersModule,
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [AppService, WebsocketGateway],
+
 })
 export class AppModule {}

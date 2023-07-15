@@ -5,6 +5,7 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const ioAdapter = new IoAdapter(app);
+
 	app.setGlobalPrefix(`api`);
 	app.enableCors({
 		origin: true, // ou définissez une liste d'origines autorisées ['http://example.com', 'http://localhost:3000']

@@ -8,6 +8,7 @@ up: build
 dev: build
 	$(COMPOSE) up
 
+
 build:
 	$(COMPOSE) build --parallel
 
@@ -23,6 +24,15 @@ down:
 
 ps:
 	$(COMPOSE) ps --all
+
+#without docker dev :
+alldev: frt bck
+
+frt:
+	cd front-end && npm install && npm run dev
+
+bck:
+	cd back-end && npm install && npm run start:dev
 
 fclean:
 	./docker/fclean_docker.sh
