@@ -3,11 +3,13 @@ import Link from 'next/link';
 
 
 export default function Home() {
+	
 	return (
 		<>
 			<main className="flex min-h-screen flex-col items-center justify-between p-24">HOME PAGE
-			<nav>
-				<Link href='http://www.ben3d.fr' className=' text-4xl'> LOGIN </Link>
+			<nav className='flex flex-col items-center justify-between p-24 m-5'>
+				<Link href='/websocket' className=' text-4xl'> GO TO CHAT PROTO </Link>
+				<Link href='/game' className=' text-4xl'> GO TO GAME PROTO </Link>
 			</nav>
 			</main>
 		</>

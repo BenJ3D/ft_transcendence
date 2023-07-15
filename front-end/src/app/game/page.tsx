@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect, useRef, MutableRefObject} from "react";
 import "./game.css";
 import ButtonDBG from "@/Components/button/btn_dbg";
 
@@ -15,10 +15,10 @@ function Background() {
 }
 
 function Player(): React.JSX.Element {
-	let ret;
+	let ret: React.JSX.Element;
 	ret = (
 		<>
-			<div className="min-w-[0.65vw] max-w-[3vw] min-h-[1vw] max-h-[3vw] bg-zinc-800 rounded-sm shadow m-6" />
+			<div className="min-w-[0.65vw] max-w-[3vw] min-h-[1vw] max-h-[3vw] bg-zinc-800 rounded-sm shadow m-6"/>
 		</>
 	);
 	return ret;
@@ -76,15 +76,15 @@ export default function Page() {
 		let animationFrameId;
 
 		const movePlayer = () => {
-			const gameDivHeight = gameDivRef.current.offsetHeight;
-			const barHeight = barRef.current.offsetHeight;
+			const gameDivHeight = gameDivRef.current?.offsetHeight;
+			const barHeight = barRef.current?.offsetHeight;
 
 			setBarPositionP1((prevPosition) => {
 				let newPosition = prevPosition;
 				if (keysPressed["ArrowUp"]) {
-					newPosition = Math.max(newPosition - 3, 0);
+					newPosition = Math.max(newPosition - gameDivHeight * 0.02, 0);
 				} else if (keysPressed["ArrowDown"]) {
-					newPosition = Math.min(newPosition + 3, gameDivHeight - barHeight);
+					newPosition = Math.min(newPosition + gameDivHeight * 0.05, gameDivHeight - barHeight);
 				}
 				return newPosition;
 			});
@@ -102,7 +102,7 @@ export default function Page() {
 	}, [keysPressed]);
 
 	return (
-		<main className=" bg-blue-app min-h-screen py-[13vw]">
+		<main className=" bg-blue-app min-h-screen py-[12vw]">
 			<section className="flex justify-center">
 				<ButtonDBG param={{f: () => addGoal("left"), text: "ADD GOAL P1"}} />
 				<div
