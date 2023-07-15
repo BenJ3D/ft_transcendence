@@ -88,7 +88,7 @@ export default function WebsocketClient({className, classNameBlockMessage}: {cla
 		if (socketRef.current) {
 			let messObj: ChatMessage = {
 				clientId: 1,
-				clientSocketId: socketRef.current.id,
+				clientSocketId: username + ' id=' + socketRef.current.id,
 				clientPsedo: username,
 				message: msg,
 			};
@@ -113,11 +113,10 @@ export default function WebsocketClient({className, classNameBlockMessage}: {cla
 				</div>
 				<ul className={classNameBlockMessage}>
 
-
 					{chatMsgs.map((obj, index) => (
 						<div key={"blocMessage-" + uuidv4()} className={obj.clientPsedo === username ? 'text-right' : 'text-left '}>
 							<li className={`text-neutral-400 font-semibold text-base ml-4 ${obj.clientPsedo === username ? 'text-right ml-auto mr-5' : 'text-left ml-2'}`}>
-								{obj.clientPsedo}
+								{obj.clientSocketId}
 							</li>
 							<li className={`p-2 mb-4 rounded-xl max-w-max min-w-[10rem] 
 															${obj.clientPsedo === username ? 'text-right ml-auto mr-4 bg-teal-900' : 'text-left ml-2 bg-gray-800'}`}>
