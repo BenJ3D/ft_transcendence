@@ -3,10 +3,6 @@
 import React, {useState, useEffect, useRef, MutableRefObject} from "react";
 import "./game.css";
 import ButtonDBG from "@/components/(ben_proto)/DevTools/button/btn_dbg";
-import Ball from "./ball";
-
-// let windowsWidth = window.innerWidth;
-// let windowsHeight = window.innerHeight;
 
 interface playerScoreboard {
 	playerId: number;
@@ -42,11 +38,10 @@ function ScoreDisplay({player}: {player: playerScoreboard}) {
 	);
 }
 
-export default function Page() {
+export default function Game() {
 	const [scoreP1, setScoreP1] = useState(0);
 	const [scoreP2, setScoreP2] = useState(0);
 	const [barPositionP1, setBarPositionP1] = useState(0);
-	const [barPositionP2, setBarPositionP2] = useState(0);
 	const [keysPressed, setKeysPressed] = useState({});
 	const gameDivRef = useRef(null);
 	const barRef = useRef(null);
@@ -78,46 +73,23 @@ export default function Page() {
 	}, []);
 
 	useEffect(() => {
-		let animationFrameId: number;
+		let animationFrameId;
 
 		const movePlayer = () => {
-			const gameDivHeight = gameDivRef.current.offsetHeight;
-			const barHeight = barRef.current.offsetHeight;
+			const gameDivHeight = gameDivRef.current?.offsetHeight;
+			const barHeight = barRef.current?.offsetHeight;
 
 			setBarPositionP1((prevPosition) => {
 				let newPosition = prevPosition;
-				if (keysPressed["ArrowUp"]) 
-				{
-					newPosition = Math.max(newPosition - gameDivHeight * 0.03, 0);
+				if (keysPressed["ArrowUp"]) {
+					newPosition = Math.max(newPosition - gameDivHeight * 0.02, 0);
+				} else if (keysPressed["ArrowDown"]) {
+					newPosition = Math.min(newPosition + gameDivHeight * 0.05, gameDivHeight - barHeight);
 				}
-				else if (keysPressed["ArrowDown"]) 
-				{
-					newPosition = Math.min(
-						newPosition + gameDivHeight * 0.03,
-						gameDivHeight - barHeight
-					);
-				} 
 				return newPosition;
 			});
 
-			setBarPositionP2((prevPosition) => {
-				let newPosition = prevPosition;
-				if (keysPressed["w"]) 
-				{
-					newPosition = Math.max(newPosition - gameDivHeight * 0.03, 0);
-				}
-				else if (keysPressed["s"]) 
-				{
-					newPosition = Math.min(
-						newPosition + gameDivHeight * 0.03,
-						gameDivHeight - barHeight
-					);
-				} 
-				return newPosition;
-			});
-
-			if (keysPressed["ArrowUp"] || keysPressed["ArrowDown"] || keysPressed["w"] || keysPressed["s"]) {
-				console.log("movePlayer" + barPositionP1)
+			if (keysPressed["ArrowUp"] || keysPressed["ArrowDown"]) {
 				animationFrameId = requestAnimationFrame(movePlayer);
 			}
 		};
@@ -129,33 +101,22 @@ export default function Page() {
 		};
 	}, [keysPressed]);
 
-
-
-
-
-
 	return (
-		<main className=" bg-blue-app">
+		<main className=" bg-blue-app min-h-screen py-[12vw]">
 			<section className="flex justify-center">
 				<ButtonDBG param={{f: () => addGoal("left"), text: "ADD GOAL P1"}} />
 				<div
 					ref={gameDivRef}
-					className="flex justify-between w-1/3 bg-blue-game rounded-2xl relative"
+					className="flex justify-between w-1/3 bg-blue-game rounded-2xl"
 					style={{height: "calc(40vw * 10 / 16) "}}
 				>
-					{/* <Player /> */}
-					<div
-						ref={barRef}
-						className="min-w-[0.65vw] max-w-[3vw] min-h-[1vw] max-h-[3vw] bg-zinc-800 rounded-sm shadow mx-3 my-0"
-						style={{transform: `translateY(${barPositionP2}px)`}}
-					></div>
-					{/* <ScoreDisplay
+					<Player />
+					<ScoreDisplay
 						player={{playerId: 1, positionInGame: "left", score: scoreP1}}
-					/> */}
-				{/* <Ball /> */}
-					{/* <ScoreDisplay
+					/>
+					<ScoreDisplay
 						player={{playerId: 2, positionInGame: "right", score: scoreP2}}
-					/> */}
+					/>
 					<div
 						ref={barRef}
 						className="min-w-[0.65vw] max-w-[3vw] min-h-[1vw] max-h-[3vw] bg-zinc-800 rounded-sm shadow mx-3 my-0"

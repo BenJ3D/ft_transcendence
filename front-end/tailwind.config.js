@@ -20,11 +20,6 @@ module.exports = {
 				'blue-app': '#050C2E',
 				'gray-A3' : '#A3A3A3',
 			},
-      fontFamily: {
-        'vt323': ['VT323', 'monospace'],
-        'press-start': ['Press Start 2P', 'cursive'],
-        'Montserrat': ['Montserrat Alternates', 'sans-serif']
-      }
     },
   },
   plugins: [],

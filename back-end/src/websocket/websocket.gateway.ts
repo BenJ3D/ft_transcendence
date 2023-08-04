@@ -10,15 +10,12 @@ import { Server, Socket } from 'socket.io';
 import { IChatMessage } from '../interfaces/chatTypes';
 
 interface UserSocket {
-	username: string;
+	login: string;
 	socketID: string;
 }
 
-@WebSocketGateway({
-	cors: true,
-	namespace: '/chat',
-})
-export class WebsocketGatewayChat
+@WebSocketGateway({ cors: true })
+export class WebsocketGateway
 	implements OnGatewayConnection, OnGatewayDisconnect
 {
 	@WebSocketServer()
@@ -28,16 +25,16 @@ export class WebsocketGatewayChat
 	private clients: UserSocket[] = [];
 
 	handleConnection(@ConnectedSocket() client: Socket) {
-		const username = client.handshake.query.username as string;
+		const login = client.handshake.query.login as string;
 		client.join('homeRoom');
 		console.log('NEW CONNEXION CLIENT, id = ' + client.id);
-		this.clients.push({ username, socketID: client.id });
+		this.clients.push({ login, socketID: client.id });
 		this.server
 			.to(client.id)
 			.emit('welcome', 'Bienvenue sur le chat room principal');
 
 		// this.server.to(client.id).emit('getallmsg', this.messages);
-		// this.server.to(client.id).emit('getallmsgObj', this.messagesObj);
+		this.server.to(client.id).emit('getallmsgObj', this.messagesObj);
 	}
 
 	handleDisconnect(client: Socket) {
@@ -45,24 +42,12 @@ export class WebsocketGatewayChat
 		console.log('CLIENT ' + client.id + ' left');
 	}
 
-	@SubscribeMessage('clearMsgs')
-	handleClearMessages(client: Socket, payload: string) {
-    this.messagesObj = [];
-
-	}
 	@SubscribeMessage('message')
 	handleMessage(client: Socket, payload: string) {
 		console.log(client.id + ': ' + payload);
 		this.messages.push(payload);
 		this.server.to(client.id).emit('response', payload);
 		client.emit('hello', 'world');
-	}
-
-	@SubscribeMessage('getAllMsgs')
-	getAllMsgs(client: Socket) {
-		console.log(`${client.id} need all message channel`);
-		console.log(this.messagesObj);
-		this.server.to(client.id).emit('getallmsgObj', this.messagesObj);
 	}
 
 	/**
@@ -72,15 +57,15 @@ export class WebsocketGatewayChat
 	 */
 	@SubscribeMessage('messageObj')
 	handleMessageObj(client: Socket, payload: any) {
-		console.log(client.id + ': ' + JSON.stringify(payload));
+		console.log(client.id + ': ' + payload);
 		this.messagesObj.push(payload);
 		this.server.to('homeRoom').emit('responseObj', payload);
 	}
 
-	// @SubscribeMessage('game')
-	// handleGame(client: Socket, payload: any) {
-	// 	console.log(client.id + ': ' + payload);
-	// 	this.messagesObj.push(payload);
-	// 	this.server.to('game').emit('gameObj', payload);
-	// }
+	@SubscribeMessage('game')
+	handleGame(client: Socket, payload: any) {
+		console.log(client.id + ': ' + payload);
+		this.messagesObj.push(payload);
+		this.server.to('game').emit('gameObj', payload);
+	}
 }
