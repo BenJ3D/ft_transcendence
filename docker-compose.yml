@@ -20,46 +20,49 @@ services:
   back-end:
     depends_on:
       - db
-    container_name: api
+    container_name: pong-api
     build:
       context: ./
       dockerfile: ./docker/back-end.dockerfile
     volumes:
       - ./back-end/src:/usr/src/app/src
       # - ./front-end/src/shared/:/usr/src/app/src/shared
-    ports:
-      - "8000:8000"
     networks:
-      - webapp
       - database
+      - global
+    ports:
+      - 8000:8000
+
+    
+
     environment:
       - NODE_ENV=development
     env_file:
       - ./docker/.env/.env_db
       - ./docker/.env/.env_42
       - ./docker/.env/.env_nest
+    restart: always
       
   front-end:
     depends_on:
       - back-end
-    container_name: app
+    container_name: pong-app
     build:
       context: ./
       dockerfile: ./docker/front-end.dockerfile
     volumes:
       - ./front-end/src:/usr/src/app/front-end/src
       - ./front-end/public:/usr/src/app/front-end/public
-    ports:
-      - "3000:3000"
     networks:
-      - webapp
+      - global
     environment:
       # - NODE_ENV=development
       - NEXT_SKIP_TYPE_CHECK=true
+    restart: always
 
 
   adminer:
-    container_name: adminer
+    container_name: pong-adminer
     image: adminer
     restart: always
     ports:
@@ -77,3 +80,5 @@ networks:
     driver: bridge
   database:
     driver: bridge
+  global:
+    external: true

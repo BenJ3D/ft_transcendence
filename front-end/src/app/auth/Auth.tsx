@@ -84,7 +84,7 @@ export default function Auth({className}: { className?: string }) {
         router.push("/home");
 
     useEffect(() => {
-        authManager.setBaseURL('http://' + window.location.href.split(':')[1].substring(2) + ':8000/api/');
+        authManager.setBaseURL('https://' + window.location.href.split(':')[1].substring(2) + '/api/');
         const tmpToken = localStorage.getItem('token');
         if (tmpToken)
         {

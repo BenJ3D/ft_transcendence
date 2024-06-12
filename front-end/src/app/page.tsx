@@ -15,7 +15,7 @@ export default function Home() {
     const router = useRouter();
 
     useEffect(() => {
-        authManager.setBaseURL('http://' + window.location.href.split(':')[1].substring(2) + ':8000/api/');
+        authManager.setBaseURL('https://' + window.location.href.split(':')[1].substring(2) + '/api/');
     });
 
     useEffect(() => {

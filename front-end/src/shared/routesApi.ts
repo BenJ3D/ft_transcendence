@@ -7,7 +7,7 @@ const IP_HOST = () => {
 		return `localhost`
 }
 
-const serverApi = `http://${IP_HOST()}:8000/api`
+const serverApi = `https://${IP_HOST()}/api`
 
 // definition des routes root 🫠
 const routeUsers = 'users'

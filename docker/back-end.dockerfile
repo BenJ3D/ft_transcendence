@@ -14,5 +14,7 @@ COPY --chown=node:node ./front-end/src/shared 				./back-end/src/
 
 RUN npm run build
 
+EXPOSE 8042
+
 CMD [ "npm", "run", "start:prod" ]
 

@@ -31,9 +31,9 @@ const originDefault: IOriginNetwork = {
 const originDefaultFull = (origin: IOriginNetwork): IOriginNetwork => {
 	return {
 			...origin,
-			apiDOM: `http://${origin.domain}:${origin.apiPort}`,
+			apiDOM: `https://${origin.domain}:${origin.apiPort}`,
 			wsApiDOM: `ws://${origin.domain}:${origin.appPort}`,
-			appDOM: `http://${origin.domain}:${origin.appPort}`,
+			appDOM: `https://${origin.domain}:${origin.appPort}`,
 	}
 }
 
@@ -42,8 +42,8 @@ export function SocketProvider({ children }) {
   const [socketGame, setSocketGame] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const newSocketChat = io(`http://${originDefault.domain}:${originDefault.apiPort}/chat`, { autoConnect: false });
-    const newSocketGame = io(`http://${originDefault.domain}:${originDefault.apiPort}/game`, { autoConnect: false });
+    const newSocketChat = io(`https://${originDefault.domain}:${originDefault.apiPort}/chat`, { autoConnect: false });
+    const newSocketGame = io(`https://${originDefault.domain}:${originDefault.apiPort}/game`, { autoConnect: false });
     setSocketChat(newSocketChat);
     setSocketGame(newSocketGame);
 

@@ -16,7 +16,7 @@ const AuthManager = require('./AuthManager');
 export const authManager = new AuthManager();
 
 export const axiosInstance = axios.create({
-	baseURL: "http://localhost:8000/api/",
+	baseURL: "https://pongpod.fr/api/",
 	validateStatus: function (status) {
 		return status >= 200 && status < 204;
 	},
